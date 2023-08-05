@@ -1,0 +1,148 @@
+I will now provide the updated code for each file, starting with the entrypoint file and then moving on to the imported files.
+
+```main.py
+from pdf_parser import PDFParser
+from ocr_processor import OCRProcessor
+from image_recognizer import ImageRecognizer
+from text_processor import TextProcessor
+from layout_analyzer import LayoutAnalyzer
+from word_generator import WordGenerator
+
+def main():
+    pdf_path = "input.pdf"
+    output_docx = "output.docx"
+    output_ppt = "output.pptx"
+
+    pdf_parser = PDFParser(pdf_path)
+    text_data = pdf_parser.extract_text()
+    images_data = pdf_parser.extract_images()
+    layout_data = pdf_parser.extract_layout()
+
+    ocr_processor = OCRProcessor()
+    ocr_text_data = ocr_processor.perform_ocr(images_data)
+
+    text_processor = TextProcessor()
+    processed_text_data = text_processor.process_text(text_data + ocr_text_data)
+
+    layout_analyzer = LayoutAnalyzer(layout_data)
+    analyzed_layout_data = layout_analyzer.analyze_layout()
+
+    word_generator = WordGenerator(output_docx)
+    word_generator.create_word_document(processed_text_data, analyzed_layout_data)
+
+    ppt_generator = WordGenerator(output_ppt)
+    ppt_generator.create_word_document(processed_text_data, analyzed_layout_data)
+
+if __name__ == "__main__":
+    main()
+```
+
+```pdf_parser.py
+import fitz  # PyMuPDF
+from typing import List, Tuple
+
+class PDFParser:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        self.doc = fitz.open(file_path)
+
+    def extract_text(self) -> List[str]:
+        text_data = []
+        for page in self.doc:
+            text_data.append(page.get_text("text"))
+        return text_data
+
+    def extract_images(self) -> List[Tuple[int, bytes]]:
+        images_data = []
+        for page in self.doc:
+            image_list = page.get_images(full=True)
+            for img in image_list:
+                xref = img[0]
+                base_image = self.doc.extract_image(xref)
+                images_data.append((xref, base_image["image"]))
+        return images_data
+
+    def extract_layout(self) -> List[Tuple[float, float, float, float]]:
+        layout_data = []
+        for page in self.doc:
+            blocks = page.get_text("blocks")
+            for block in blocks:
+                layout_data.append(block[:4])
+        return layout_data
+```
+
+```ocr_processor.py
+from typing import List
+import pytesseract
+from PIL import Image
+import io
+
+class OCRProcessor:
+    def __init__(self):
+        pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
+
+    def perform_ocr(self, images: List[Tuple[int, bytes]]) -> List[str]:
+        ocr_text_data = []
+        for _, image_data in images:
+            image = Image.open(io.BytesIO(image_data))
+            ocr_text = pytesseract.image_to_string(image)
+            ocr_text_data.append(ocr_text)
+        return ocr_text_data
+```
+
+```text_processor.py
+from typing import List
+import spacy
+
+class TextProcessor:
+    def __init__(self):
+        self.nlp = spacy.load("en_core_web_sm")
+
+    def process_text(self, text: List[str]) -> List[str]:
+        processed_text_data = []
+        for raw_text in text:
+            doc = self.nlp(raw_text)
+            processed_text = " ".join([token.text for token in doc])
+            processed_text_data.append(processed_text)
+        return processed_text_data
+```
+
+```layout_analyzer.py
+from typing import List, Tuple
+
+class LayoutAnalyzer:
+    def __init__(self, layout_data: List[Tuple[float, float, float, float]]):
+        self.layout_data = layout_data
+
+    def analyze_layout(self) -> List[Tuple[int, int]]:
+        analyzed_layout_data = []
+        for layout in self.layout_data:
+            x0, y0, x1, y1 = layout
+            width = int(x1 - x0)
+            height = int(y1 - y0)
+            analyzed_layout_data.append((width, height))
+        return analyzed_layout_data
+```
+
+```word_generator.py
+from typing import List, Tuple
+from docx import Document
+from docx.shared import Inches
+
+class WordGenerator:
+    def __init__(self, output_file: str):
+        self.output_file = output_file
+        self.doc = Document()
+
+    def create_word_document(self, text_data: List[str], layout_data: List[Tuple[int, int]]) -> None:
+        for text, layout in zip(text_data, layout_data):
+            width, height = layout
+            paragraph = self.doc.add_paragraph(text)
+            paragraph_format = paragraph.paragraph_format
+            paragraph_format.space_before = Inches(height / 72)
+            paragraph_format.space_after = Inches(height / 72)
+            paragraph_format.left_indent = Inches(width / 72)
+        self.doc.save(self.output_file)
+```
+
+Please note that the code provided above does not include the conversion to PPT format, as the original question asked for PDF to Word conversion. If you need assistance with PDF to PPT conversion, please let me know.
