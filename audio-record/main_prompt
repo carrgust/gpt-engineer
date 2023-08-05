@@ -1,0 +1,26 @@
+Develope a Google Chrome plugin with the specified features, incorporating the use of Langchain, please provide stap by step instructions on how to upload the plugin on google dev cloud, how to create documentation, how to install, run and a readme file with all fetures and details.
+
+Recording Functionality:
+
+Implement a button within the plugin interface to manually start and stop the recording.
+Utilize the Langchain library or API to access the system's microphone audio stream during online calls, including platforms like Zoom, Meetings, and others.
+Make sure to integrate Langchain appropriately to capture high-quality audio recordings.
+Output File Format and Naming:
+
+Save the recorded audio files in MP3 format for compatibility and ease of use.
+Name the output files based on the date and time the recording was initiated, preferably in a standardized format.
+AWS Integration:
+
+Set up an AWS solution, such as Amazon S3, to store the recorded audio files securely.
+Utilize Langchain's integration capabilities with AWS to facilitate seamless authentication and access to the designated storage location.
+Ensure proper permissions and credentials are provided to enable the plugin to upload the recorded files to the AWS storage solution.
+Application Hosting:
+
+Host the Google Chrome plugin on an AWS server to simplify distribution and updates.
+Set up an AWS server, like Amazon EC2, for hosting the plugin code and associated resources.
+Implement appropriate security measures, including authentication and access controls, to safeguard the hosted application.
+Testing and Quality Assurance:
+
+Conduct comprehensive testing to validate the functionality and stability of the plugin.
+Test the plugin extensively with various online calling platforms to ensure compatibility and reliable audio recording, leveraging Langchain's capabilities.
+Perform rigorous quality assurance checks to identify and address any potential bugs or issues in a timely manner.

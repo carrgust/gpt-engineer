@@ -1,1 +1,23 @@
-We are writing snake in python. MVC components split in separate files. Keyboard control.
+Podcast File Upload:
+Create a module that allows users to upload MP3 files. Ensure that the system verifies the format and size of the files, and potentially converts other formats to MP3 if needed.
+
+Transcription Service:
+Integrate the OpenAI Whisper ASR API or other suitable Speech-to-Text services. The system should transcribe the uploaded MP3 files into text. The transcriptions should be stored in a structured format, such as JSON or CSV, to facilitate further processing.
+
+Sentiment Analysis:
+Implement a sentiment analysis function that uses NLP (Natural Language Processing) libraries such as NLTK or TextBlob. The function should take the transcribed text as input and return the sentiment of the text. The sentiment values can be used to determine the mood of the podcast segments.
+
+Soundtrack Creation:
+Develop a module that generates soundtracks based on the sentiments detected in the text. The duration of each soundtrack should not exceed 2 minutes.
+
+Audio Noise Reduction:
+Create a function that applies noise reduction to the uploaded MP3 files. It could use noise reduction libraries like noisereduce or other suitable alternatives.
+
+Silence Removal:
+The system should include a function that detects and removes lengthy silent parts in the podcast. This can be achieved with libraries like pydub.
+
+Audio Normalization:
+Add functionality to normalize the audio files. This includes setting the Loudness Units Full Scale (LUFS) to -16 dB. It should also allow users to adjust these settings.
+
+Final Audio File Generation:
+Finally, the system should compile all the segments, including the original podcast content and the generated soundtracks, into a final, edited podcast file. The output should be in MP3 format and maintain optimal audio quality.
